@@ -12,6 +12,8 @@ If you are looking to contribute to this project and want to open a GitHub pull 
 
 # Future vulnerability data effort
 
+The tooling that drives this repo as well as ideas for capturing the vulnerability data in a nicer way is being tracked in a repo called [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools). Please use that repo for future ideas.
+
 We have a Google Document that describes some ideas and concepts for a later vulnerability enrichment project. This particular repository is a short term stopgap to quickly deal with the missing NVD enrichment. Long term we would like to provide vulnerability enrichment in a much more sustainable way. The data in this repository will be included in the future efforts, so the work is not wasted effort.
 
 https://docs.google.com/document/d/1ccW_ng9HVwuTWiL2dGC5Tqb_CKef6pAEwRQ4tg_aDgw/edit#heading=h.7lelh5vxqxu4
