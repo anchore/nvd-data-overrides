@@ -6,21 +6,23 @@ This repo is meant to provide additional data that is currently missing from NVD
 
 Please note, this data does not provide severity information. By definition only NVD can supply NVD CVSS scores.
 
-# Contributing
-
-If you are looking to contribute to this project and want to open a GitHub pull request ("PR"). Please make sure you create a signed-off commit with -s or --signoff passed to the git command.
-
-# Future vulnerability data effort
-
 The tooling that drives this repo as well as ideas for capturing the vulnerability data in a nicer way is being tracked in a repo called [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools). Please use that repo for future ideas.
 
-We have a Google Document that describes some ideas and concepts for a later vulnerability enrichment project. This particular repository is a short term stopgap to quickly deal with the missing NVD enrichment. Long term we would like to provide vulnerability enrichment in a much more sustainable way. The data in this repository will be included in the future efforts, so the work is not wasted effort.
+# Repository layout
 
-https://docs.google.com/document/d/1ccW_ng9HVwuTWiL2dGC5Tqb_CKef6pAEwRQ4tg_aDgw/edit#heading=h.7lelh5vxqxu4
+This repository contains the data for the NVD overrides. This is data meant to enrich the JSON currently being returned by NVD.
 
-We have a lot of ideas on how to do this better in the future. We envision a data format capable of generating the data currently stored in this repository. The NVD format is very constrained. By capturing the same data but formatting it in a nicer way, it will be possible to output any format needed. NVD, OSV, cve5, and more. Think of this repository as a place to learn what we don't know yet.
+The `.snapshot` directory is meant to hold any existing upstream NVD data for an override. At the moment all the files are empty as there has not been any NVD CPE data added for these IDs. The intent of capturing the original data so if the NVD API isn't available, the original data may be referenced if an override exists.
 
-Regardless of the data format used, it can be expected that this override data will be generated and available for the forseeable future.
+In the `data` directory the override files are separated by year. The JSON in these files is meant to be inserted into the JSON from NVD for a given CVE ID. The CVE ID is not recorded in the JSON file, it should be extracted from the filename. Think of this as additional data that can be inserted into the NVD records as returned by the [NVD API](https://nvd.nist.gov/developers/vulnerabilities).
+
+At the moment the focus is on the CPE matching data. Additional data such as vendor severity and CWE would be welcome additions.
+
+# Contributing
+
+If you're looking to get involved this probably isn't the best place to start. The [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) repo is where the tools and planning exists. You should probably start there.
+
+If you are looking to contribute to this project and want to open a GitHub pull request ("PR"). Please make sure you create a signed-off commit with -s or --signoff passed to the git command.
 
 # FAQ
 
