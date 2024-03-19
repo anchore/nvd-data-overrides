@@ -1,8 +1,8 @@
-# Grype DB NVD Overrides
+# NVD Data Overrides
 
-This repository is for filling the gap NVD has left in the Grype vulnerability dataset. On Feb 15, 2024 [NVD](https://nvd.nist.gov) stopped their regular process of enriching most CVE IDs with additional metadata. This data was used by Grype to match artifacts not covered by other ecosystems.
+This repository is for filling the gap NVD has left in the public vulnerability dataset. On Feb 15, 2024 [NVD](https://nvd.nist.gov) stopped their regular process of enriching most CVE IDs with additional metadata.
 
-This repo is meant to provide additional data that is currently missing from NVD, and ensure Grype can use that enrichment.
+This repo is meant to provide additional data that is currently missing from NVD.
 
 Please note, this data does not provide severity information. By definition only NVD can supply NVD CVSS scores.
 
@@ -24,8 +24,11 @@ Regardless of the data format used, it can be expected that this override data w
 
 # FAQ
 
+### Why are you doing this?
+ This data provided by NVD was used by Grype to match artifacts not covered by other data sources. We refer to this as the "matcher of last resort". As such, we need this data for a properly functioning Grype. Since we need this data, Grype is an open source project, and it would be beneficial to cooperate. Creating an open source project seemed like the best option.
+
 ### What happens if NVD goes back to normal?
-In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Grype needs the ability to augment and enrich some of the vulnerability data. Not every vulnerability database supports every ecosystem.
+In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Not every vulnerability database supports every ecosystem, so being able to enrich vulnerability data makes sense.
 
 For example there could be vulnerability data about a binary they build, but if that binary is also downloaded from the project directly, that information may not be tracked anywhere else.
 
