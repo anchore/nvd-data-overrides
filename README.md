@@ -25,7 +25,7 @@ Regardless of the data format used, it can be expected that this override data w
 # FAQ
 
 ### Why are you doing this?
- This data provided by NVD was used by Grype to match artifacts not covered by other ecosystems. We refer to this as the "matcher of last resort". As such, we need this data for a properly functioning Grype. Since we need this data, Grype is an open source project, and it would be beneficial to cooperate. Creating an open source project seemed like the best option.
+ This data provided by NVD was used by Grype to match artifacts not covered by other data sources. We refer to this as the "matcher of last resort". As such, we need this data for a properly functioning Grype. Since we need this data, Grype is an open source project, and it would be beneficial to cooperate. Creating an open source project seemed like the best option.
 
 ### What happens if NVD goes back to normal?
 In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Not every vulnerability database supports every ecosystem, so being able to enrich vulnerability data makes sense.
