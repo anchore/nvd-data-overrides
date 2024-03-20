@@ -29,6 +29,9 @@ If you are looking to contribute to this project and want to open a GitHub pull 
 ### Why are you doing this?
  This data provided by NVD was used by Grype to match artifacts not covered by other data sources. We refer to this as the "matcher of last resort". As such, we need this data for a properly functioning Grype. Since we need this data, Grype is an open source project, and it would be beneficial to cooperate. Creating an open source project seemed like the best option.
 
+ ### Can Anchore actually pull this off?
+ No, we can't. We need help. Open source is one of the most amazing ways to solve problems the world has ever seen. We know we can't do this alone, please come help. Also tell all your friends.
+
 ### What happens if NVD goes back to normal?
 In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Not every vulnerability database supports every ecosystem, so being able to enrich vulnerability data makes sense.
 
