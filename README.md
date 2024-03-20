@@ -12,7 +12,7 @@ The tooling that drives this repo as well as ideas for capturing the vulnerabili
 
 This repository contains the data for the NVD overrides. This is data meant to enrich the JSON currently being returned by NVD.
 
-The `.snapshot` directory is meant to hold any existing upstream NVD data for an override. At the moment all the files are empty as there has not been any NVD CPE data added for these IDs. The intent of capturing the original data so if the NVD API isn't available, the original data may be referenced if an override exists.
+The `.snapshot` directory is meant to capture the original nvd record state for any properties which we are overriding at the time it is overridden so that in future if any of those properties on the upstream record change we can detect that we need to reconcile with our overridden values. For the moment it will only be useful if NVD start adding CPE configuration nodes again.
 
 In the `data` directory the override files are separated by year. The JSON in these files is meant to be inserted into the JSON from NVD for a given CVE ID. The CVE ID is not recorded in the JSON file, it should be extracted from the filename. Think of this as additional data that can be inserted into the NVD records as returned by the [NVD API](https://nvd.nist.gov/developers/vulnerabilities).
 
