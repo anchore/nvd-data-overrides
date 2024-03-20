@@ -33,7 +33,7 @@ If you are looking to contribute to this project and want to open a GitHub pull 
  No, we can't. We need help. Open source is one of the most amazing ways to solve problems the world has ever seen. We know we can't do this alone, please come help. Also tell all your friends.
 
 ### What happens if NVD goes back to normal?
-In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Not every vulnerability database supports every ecosystem, so being able to enrich vulnerability data makes sense.
+In the event NVD returns, or some other project takes over the current task of NVD, we expect to continue to maintain this project. Not every vulnerability database supports every ecosystem, so being able to enrich vulnerability data makes sense. But the need to enrich everything would be diminished greatly. This project is meant to be downstream of something like NVD, we will defer to their data when possible.
 
 For example there could be vulnerability data about a binary they build, but if that binary is also downloaded from the project directly, that information may not be tracked anywhere else.
 
