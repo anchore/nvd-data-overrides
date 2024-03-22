@@ -4,9 +4,44 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "_annotation": {"$ref": "#/$defs/annotation_record"},
     "cve": {"$ref": "#/$defs/nvd_cve_record"}
   },
   "$defs": {
+    "annotation_record": {
+      "type": "object",
+      "properties": {
+        "cve_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "snapshot": {
+          "type": "string"
+        },
+        "triage_notes": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "references": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "solutions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": ["reason", "snapshot", "cve_id"],
+      "additionalProperties": true
+    },
     "nvd_cve_record": {
       "type": "object",
       "additionalProperties": false,
