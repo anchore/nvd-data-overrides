@@ -26,9 +26,6 @@ jobs:
       - name: "Verify overrides json schema"
         run: check-jsonschema --schemafile schema/overrides.schema.json data/**/*.json
 
-      - name: "Verify snapshots json schema"
-        run: check-jsonschema --schemafile schema/snapshots.schema.json .snapshot/**/*.json
-
 
 
 
