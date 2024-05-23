@@ -18,29 +18,11 @@
         "reason": {
           "type": "string"
         },
-        "snapshot": {
-          "type": "string"
-        },
-        "triage_notes": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "references": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "solutions": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        }
+	"generated_from": {
+	  "type": "string"
+	}
       },
-      "required": ["reason", "snapshot", "cve_id"],
+      "required": ["reason", "cve_id"],
       "additionalProperties": true
     },
     "nvd_cve_record": {
