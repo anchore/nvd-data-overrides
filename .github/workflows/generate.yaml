@@ -1,0 +1,32 @@
+on: 
+  workflow_dispatch:
+  #schedule:
+  #  - cron: '0 * * * MON-FRI'
+
+jobs:
+  generate:
+    permissions:
+      contents: write
+    name: "Generate NVD overrides from enriched records"
+    runs-on: ubuntu-latest
+    container:
+      image: python:3-alpine
+    steps:
+      - name: Install OS dependencies
+        run: apk add --no-cache bash git
+      - name: Install python dependencies
+        run: pip install check-jsonschema cpe
+      - name: Configure git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate NVD override records
+        run: ./scripts/generate.sh
+      - name: Verify overrides json schema
+        run: check-jsonschema --schemafile schema/overrides.schema.json data/**/*.json
+      - name: Commit changes
+        run: |
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            ./scripts/commit.sh
+            git push
