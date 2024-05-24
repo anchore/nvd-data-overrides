@@ -138,7 +138,7 @@ def generate():
 
                 override["cve"]["configurations"].append(configuration)
 
-        override_path = f"nvd-data-overrides/data/{year}"
+        override_path = f"data/{year}"
 
         if not os.path.exists(override_path):
             os.makedirs(override_path)

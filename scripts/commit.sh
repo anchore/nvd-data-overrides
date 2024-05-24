@@ -1,4 +1,5 @@
 #!/bin/bash -l
+set -euxo pipefail
 
 commit=$(git -C cve-data-enrichment rev-parse HEAD)
 git add .

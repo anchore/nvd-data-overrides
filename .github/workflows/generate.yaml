@@ -1,7 +1,7 @@
 on: 
   workflow_dispatch:
-  #schedule:
-  #  - cron: '0 * * * MON-FRI'
+  schedule:
+    - cron: '20 * * * MON-FRI'
 
 jobs:
   generate:
