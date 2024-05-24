@@ -1,3 +1,6 @@
+cve-data-enrichment
+national-vulnerability-database
+
 .vunnel.yaml
 .grype-db.yaml
 .grype.yaml
