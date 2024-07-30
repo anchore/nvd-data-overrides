@@ -9,7 +9,9 @@ from cpe.comp.cpecomp2_3_fs import CPEComponent2_3_FS
 from cpe import CPE
 
 
-namespace = uuid.uuid5(uuid.NAMESPACE_URL, "https://github.com/anchore/nvd-data-overrides")
+namespace = uuid.uuid5(
+    uuid.NAMESPACE_URL, "https://github.com/anchore/nvd-data-overrides"
+)
 
 
 class MatchCriteriaIdGenerator:
@@ -19,7 +21,9 @@ class MatchCriteriaIdGenerator:
     def _load_known_nvd_id_lookups(self):
         self._nvd_known_id_lookup: dict[str, str] = {}
 
-        for nvd_file in glob("national-vulnerability-database/data/**/CVE-*.json", recursive=True):
+        for nvd_file in glob(
+            "national-vulnerability-database/data/**/CVE-*.json", recursive=True
+        ):
             with open(nvd_file) as f:
                 data = json.load(f)
 
@@ -31,16 +35,18 @@ class MatchCriteriaIdGenerator:
                         match_id = m["matchCriteriaId"]
                         del m["matchCriteriaId"]
                         del m["vulnerable"]
-                        self._nvd_known_id_lookup[json.dumps(m, sort_keys=True)] = match_id
+                        self._nvd_known_id_lookup[json.dumps(m, sort_keys=True)] = (
+                            match_id
+                        )
 
     def generate(self, match_criteria: dict) -> str:
         """
         Creates a stable UUID for a given set of match criteria.  It will use any known values from the NVD
-        before attempting to create a new one. If in future we discover exactly how the NVD 
-        generation works then in theory we should be able to exactly match any of their existing ids, 
-        but I have not found any documentation around that so far.  This will ensure they at least 
-        match across the override dataset.  We are not using the criteriaMatchId for anything, but others 
-        might so we'll at least make them non-random  
+        before attempting to create a new one. If in future we discover exactly how the NVD
+        generation works then in theory we should be able to exactly match any of their existing ids,
+        but I have not found any documentation around that so far.  This will ensure they at least
+        match across the override dataset.  We are not using the criteriaMatchId for anything, but others
+        might so we'll at least make them non-random
         """
         data = deepcopy(match_criteria)
         if self._nvd_known_id_lookup is None:
@@ -89,21 +95,15 @@ def generate():
                 if not versions:
                     continue
 
-                configuration = {
-                    "nodes": []
-                }
-                
+                configuration = {"nodes": []}
+
                 for cpe in cpes:
-                    node = {
-                        "cpeMatch": [],
-                        "negate": False,
-                        "operator": "OR"
-                    }
+                    node = {"cpeMatch": [], "negate": False, "operator": "OR"}
 
                     for version in versions:
-                        match = {
+                        cpe_match = {
                             "criteria": cpe,
-                            "vulnerable": version["status"] == "affected"
+                            "vulnerable": version["status"] == "affected",
                         }
 
                         less_than = version.get("lessThan")
@@ -115,26 +115,99 @@ def generate():
                             c = CPE(cpe)
 
                             if c.is_application():
-                                c.get("app")[0]["version"] = CPEComponent2_3_FS(v, "version")
-                                match["criteria"] = c.as_fs()
+                                c.get("app")[0]["version"] = CPEComponent2_3_FS(
+                                    v, "version"
+                                )
+                                cpe_match["criteria"] = c.as_fs()
                             elif c.is_operating_system():
-                                c.get("os")[0]["version"] = CPEComponent2_3_FS(v, "version")
-                                match["criteria"] = c.as_fs()
+                                c.get("os")[0]["version"] = CPEComponent2_3_FS(
+                                    v, "version"
+                                )
+                                cpe_match["criteria"] = c.as_fs()
                             elif c.is_hardware():
-                                c.get("hw")[0]["version"] = CPEComponent2_3_FS(v, "version")
-                                match["criteria"] = c.as_fs()
+                                c.get("hw")[0]["version"] = CPEComponent2_3_FS(
+                                    v, "version"
+                                )
+                                cpe_match["criteria"] = c.as_fs()
                         elif v != "0":
-                            match["versionStartIncluding"] = v
+                            cpe_match["versionStartIncluding"] = v
 
                         if less_than and less_than.strip() != "*":
-                            match["versionEndExcluding"] = less_than.strip()
+                            cpe_match["versionEndExcluding"] = less_than.strip()
                         elif less_than_or_equal and less_than_or_equal.strip() != "*":
-                            match["versionEndIncluding"] = less_than_or_equal.strip()
+                            cpe_match["versionEndIncluding"] = (
+                                less_than_or_equal.strip()
+                            )
 
-                        match["matchCriteriaId"] = generator.generate(match)
-                        node["cpeMatch"].append(match)
-                    
+                        cpe_match["matchCriteriaId"] = generator.generate(cpe_match)
+                        node["cpeMatch"].append(cpe_match)
+
                     configuration["nodes"].append(node)
+
+                # Handle creating platform cpe config for specific cases.  This won't handle multi-node configs,
+                # but that isn't necessary for the current dataset and we can always expand it later if needed.
+                platforms = affected.get("platforms")
+                match platforms:
+                    case ["Android"]:
+                        configuration["operator"] = "AND"
+                        configuration["nodes"].append(
+                            {
+                                "cpeMatch": [
+                                    {
+                                        "vulnerable": False,
+                                        "criteria": "cpe:2.3:o:google:android:-:*:*:*:*:*:*:*",
+                                        "matchCriteriaId": "F8B9FEC8-73B6-43B8-B24E-1F7C20D91D26",
+                                    }
+                                ],
+                                "negate": False,
+                                "operator": "OR",
+                            }
+                        )
+                    case ["iOS"]:
+                        configuration["operator"] = "AND"
+                        configuration["nodes"].append(
+                            {
+                                "cpeMatch": [
+                                    {
+                                        "vulnerable": False,
+                                        "criteria": "cpe:2.3:o:apple:iphone_os:-:*:*:*:*:*:*:*",
+                                        "matchCriteriaId": "B5415705-33E5-46D5-8E4D-9EBADC8C5705",
+                                    }
+                                ],
+                                "negate": False,
+                                "operator": "OR",
+                            }
+                        )
+                    case ["MacOS"]:
+                        configuration["operator"] = "AND"
+                        configuration["nodes"].append(
+                            {
+                                "cpeMatch": [
+                                    {
+                                        "vulnerable": False,
+                                        "criteria": "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*",
+                                        "matchCriteriaId": "387021A0-AF36-463C-A605-32EA7DAC172E",
+                                    }
+                                ],
+                                "negate": False,
+                                "operator": "OR",
+                            }
+                        )
+                    case ["Windows"]:
+                        configuration["operator"] = "AND"
+                        configuration["nodes"].append(
+                            {
+                                "cpeMatch": [
+                                    {
+                                        "vulnerable": False,
+                                        "criteria": "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
+                                        "matchCriteriaId": "A2572D17-1DE6-457B-99CC-64AFD54487EA",
+                                    }
+                                ],
+                                "negate": False,
+                                "operator": "OR",
+                            }
+                        )
 
                 override["cve"]["configurations"].append(configuration)
 
