@@ -211,6 +211,19 @@ def generate():
 
                 override["cve"]["configurations"].append(configuration)
 
+        references = enriched["adp"].get("references")
+        if references:
+            refs = []
+
+            for r in references:
+                refs.append({
+                    "url": r["url"],
+                    "source": "anchoreadp",
+                })
+
+            if refs:
+                override["cve"]["references"] = refs
+
         override_path = f"data/{year}"
 
         if not os.path.exists(override_path):
