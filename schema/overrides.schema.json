@@ -4,10 +4,17 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "_annotation": {"$ref": "#/$defs/annotation_record"},
-    "cve": {"$ref": "#/$defs/nvd_cve_record"}
+    "_annotation": {
+      "$ref": "#/$defs/annotation_record"
+    },
+    "cve": {
+      "$ref": "#/$defs/nvd_cve_record"
+    }
   },
-  "required": ["_annotation", "cve"],
+  "required": [
+    "_annotation",
+    "cve"
+  ],
   "$defs": {
     "annotation_record": {
       "type": "object",
@@ -18,11 +25,14 @@
         "reason": {
           "type": "string"
         },
-	"generated_from": {
-	  "type": "string"
-	}
+        "generated_from": {
+          "type": "string"
+        }
       },
-      "required": ["reason", "cve_id"],
+      "required": [
+        "reason",
+        "cve_id"
+      ],
       "additionalProperties": true
     },
     "nvd_cve_record": {
@@ -34,8 +44,36 @@
           "items": {
             "$ref": "#/$defs/nvd_cpe_configuration"
           }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nvd_reference"
+          }
         }
       }
+    },
+    "nvd_reference": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "maxLength": 500,
+          "type": "string",
+          "pattern": "^(ftp|http)s?://\\S+$"
+        },
+        "source": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "url"
+      ]
     },
     "nvd_cpe_configuration": {
       "type": "object",
