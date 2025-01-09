@@ -81,148 +81,153 @@ def generate():
             "cve": {},
         }
 
-        affected = enriched["adp"]["affected"]
+        rejection = enriched["additionalMetadata"].get("rejection")
 
-        if affected:
-            override["cve"]["configurations"] = []
+        if rejection:
+            override["_annotation"]["reason"] = "Emptying previously overridden CVE record because the CVE has been rejected."
+        else:
+            affected = enriched["adp"]["affected"]
 
-            for affected in affected:
-                cpes = affected.get("cpes")
-                if not cpes:
-                    continue
+            if affected:
+                override["cve"]["configurations"] = []
 
-                versions = affected.get("versions")
-                if not versions:
-                    continue
+                for affected in affected:
+                    cpes = affected.get("cpes")
+                    if not cpes:
+                        continue
 
-                configuration = {"nodes": []}
+                    versions = affected.get("versions")
+                    if not versions:
+                        continue
 
-                for cpe in cpes:
-                    node = {"cpeMatch": [], "negate": False, "operator": "OR"}
+                    configuration = {"nodes": []}
 
-                    for version in versions:
-                        cpe_match = {
-                            "criteria": cpe,
-                            "vulnerable": version["status"] == "affected",
-                        }
+                    for cpe in cpes:
+                        node = {"cpeMatch": [], "negate": False, "operator": "OR"}
 
-                        less_than = version.get("lessThan")
-                        less_than_or_equal = version.get("lessThanOrEqual")
-                        v = version["version"].strip()
+                        for version in versions:
+                            cpe_match = {
+                                "criteria": cpe,
+                                "vulnerable": version["status"] == "affected",
+                            }
 
-                        if not less_than and not less_than_or_equal:
-                            # This is a single affected version so set the version component in the CPE
-                            c = CPE(cpe)
+                            less_than = version.get("lessThan")
+                            less_than_or_equal = version.get("lessThanOrEqual")
+                            v = version["version"].strip()
 
-                            if c.is_application():
-                                c.get("app")[0]["version"] = CPEComponent2_3_FS(
-                                    v, "version"
+                            if not less_than and not less_than_or_equal:
+                                # This is a single affected version so set the version component in the CPE
+                                c = CPE(cpe)
+
+                                if c.is_application():
+                                    c.get("app")[0]["version"] = CPEComponent2_3_FS(
+                                        v, "version"
+                                    )
+                                    cpe_match["criteria"] = c.as_fs()
+                                elif c.is_operating_system():
+                                    c.get("os")[0]["version"] = CPEComponent2_3_FS(
+                                        v, "version"
+                                    )
+                                    cpe_match["criteria"] = c.as_fs()
+                                elif c.is_hardware():
+                                    c.get("hw")[0]["version"] = CPEComponent2_3_FS(
+                                        v, "version"
+                                    )
+                                    cpe_match["criteria"] = c.as_fs()
+                            elif v != "0":
+                                cpe_match["versionStartIncluding"] = v
+
+                            if less_than and less_than.strip() != "*":
+                                cpe_match["versionEndExcluding"] = less_than.strip()
+                            elif less_than_or_equal and less_than_or_equal.strip() != "*":
+                                cpe_match["versionEndIncluding"] = (
+                                    less_than_or_equal.strip()
                                 )
-                                cpe_match["criteria"] = c.as_fs()
-                            elif c.is_operating_system():
-                                c.get("os")[0]["version"] = CPEComponent2_3_FS(
-                                    v, "version"
-                                )
-                                cpe_match["criteria"] = c.as_fs()
-                            elif c.is_hardware():
-                                c.get("hw")[0]["version"] = CPEComponent2_3_FS(
-                                    v, "version"
-                                )
-                                cpe_match["criteria"] = c.as_fs()
-                        elif v != "0":
-                            cpe_match["versionStartIncluding"] = v
 
-                        if less_than and less_than.strip() != "*":
-                            cpe_match["versionEndExcluding"] = less_than.strip()
-                        elif less_than_or_equal and less_than_or_equal.strip() != "*":
-                            cpe_match["versionEndIncluding"] = (
-                                less_than_or_equal.strip()
+                            cpe_match["matchCriteriaId"] = generator.generate(cpe_match)
+                            node["cpeMatch"].append(cpe_match)
+
+                        configuration["nodes"].append(node)
+
+                    # Handle creating platform cpe config for specific cases.  This won't handle multi-node configs,
+                    # but that isn't necessary for the current dataset and we can always expand it later if needed.
+                    platforms = affected.get("platforms")
+                    match platforms:
+                        case ["Android"]:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": [
+                                        {
+                                            "vulnerable": False,
+                                            "criteria": "cpe:2.3:o:google:android:-:*:*:*:*:*:*:*",
+                                            "matchCriteriaId": "F8B9FEC8-73B6-43B8-B24E-1F7C20D91D26",
+                                        }
+                                    ],
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
+                            )
+                        case ["iOS"]:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": [
+                                        {
+                                            "vulnerable": False,
+                                            "criteria": "cpe:2.3:o:apple:iphone_os:-:*:*:*:*:*:*:*",
+                                            "matchCriteriaId": "B5415705-33E5-46D5-8E4D-9EBADC8C5705",
+                                        }
+                                    ],
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
+                            )
+                        case ["MacOS"]:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": [
+                                        {
+                                            "vulnerable": False,
+                                            "criteria": "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*",
+                                            "matchCriteriaId": "387021A0-AF36-463C-A605-32EA7DAC172E",
+                                        }
+                                    ],
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
+                            )
+                        case ["Windows"]:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": [
+                                        {
+                                            "vulnerable": False,
+                                            "criteria": "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
+                                            "matchCriteriaId": "A2572D17-1DE6-457B-99CC-64AFD54487EA",
+                                        }
+                                    ],
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
                             )
 
-                        cpe_match["matchCriteriaId"] = generator.generate(cpe_match)
-                        node["cpeMatch"].append(cpe_match)
+                    override["cve"]["configurations"].append(configuration)
 
-                    configuration["nodes"].append(node)
+            references = enriched["adp"].get("references")
+            if references:
+                refs = []
 
-                # Handle creating platform cpe config for specific cases.  This won't handle multi-node configs,
-                # but that isn't necessary for the current dataset and we can always expand it later if needed.
-                platforms = affected.get("platforms")
-                match platforms:
-                    case ["Android"]:
-                        configuration["operator"] = "AND"
-                        configuration["nodes"].append(
-                            {
-                                "cpeMatch": [
-                                    {
-                                        "vulnerable": False,
-                                        "criteria": "cpe:2.3:o:google:android:-:*:*:*:*:*:*:*",
-                                        "matchCriteriaId": "F8B9FEC8-73B6-43B8-B24E-1F7C20D91D26",
-                                    }
-                                ],
-                                "negate": False,
-                                "operator": "OR",
-                            }
-                        )
-                    case ["iOS"]:
-                        configuration["operator"] = "AND"
-                        configuration["nodes"].append(
-                            {
-                                "cpeMatch": [
-                                    {
-                                        "vulnerable": False,
-                                        "criteria": "cpe:2.3:o:apple:iphone_os:-:*:*:*:*:*:*:*",
-                                        "matchCriteriaId": "B5415705-33E5-46D5-8E4D-9EBADC8C5705",
-                                    }
-                                ],
-                                "negate": False,
-                                "operator": "OR",
-                            }
-                        )
-                    case ["MacOS"]:
-                        configuration["operator"] = "AND"
-                        configuration["nodes"].append(
-                            {
-                                "cpeMatch": [
-                                    {
-                                        "vulnerable": False,
-                                        "criteria": "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*",
-                                        "matchCriteriaId": "387021A0-AF36-463C-A605-32EA7DAC172E",
-                                    }
-                                ],
-                                "negate": False,
-                                "operator": "OR",
-                            }
-                        )
-                    case ["Windows"]:
-                        configuration["operator"] = "AND"
-                        configuration["nodes"].append(
-                            {
-                                "cpeMatch": [
-                                    {
-                                        "vulnerable": False,
-                                        "criteria": "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
-                                        "matchCriteriaId": "A2572D17-1DE6-457B-99CC-64AFD54487EA",
-                                    }
-                                ],
-                                "negate": False,
-                                "operator": "OR",
-                            }
-                        )
+                for r in references:
+                    refs.append({
+                        "url": r["url"],
+                        "source": "anchoreadp",
+                    })
 
-                override["cve"]["configurations"].append(configuration)
-
-        references = enriched["adp"].get("references")
-        if references:
-            refs = []
-
-            for r in references:
-                refs.append({
-                    "url": r["url"],
-                    "source": "anchoreadp",
-                })
-
-            if refs:
-                override["cve"]["references"] = refs
+                if refs:
+                    override["cve"]["references"] = refs
 
         override_path = f"data/{year}"
 
