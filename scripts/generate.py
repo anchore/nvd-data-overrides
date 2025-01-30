@@ -213,6 +213,21 @@ def generate():
                                     "operator": "OR",
                                 }
                             )
+                        case ["Gentoo"]:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": [
+                                        {
+                                            "vulnerable": False,
+                                            "criteria": "cpe:2.3:o:gentoo:linux:-:*:*:*:*:*:*:*",
+                                            "matchCriteriaId": "92121D8A-529E-454A-BC8D-B6E0017E615D",
+                                        }
+                                    ],
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
+                            )
 
                     override["cve"]["configurations"].append(configuration)
 
