@@ -229,6 +229,26 @@ def generate():
                                 }
                             )
 
+                    platform_cpes = affected.get("platformCpes", [])
+                    if platform_cpes:
+                        configuration["operator"] = "AND"
+                        matches = []
+                        for cpe in platform_cpes:
+                            match = {
+                                "vulnerable": False,
+                                "criteria": cpe,
+                            }
+                            match["matchCriteriaId"] = generator.generate(cpe_match)
+                            matches.append(match)
+
+                        configuration["nodes"].append(
+                            {
+                                "cpeMatch": matches,
+                                "negate": False,
+                                "operator": "OR",
+                            }
+                        )
+
                     override["cve"]["configurations"].append(configuration)
 
             references = enriched["adp"].get("references")
