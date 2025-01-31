@@ -4,7 +4,7 @@ This repository contains enriched vulnerability data in NVD-compatible format. I
 
 ## About This Repository
 
-The data here is automatically generated from the [vulnerability-data](https://github.com/anchore/vulnerability-data) repository using tools from the [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) project. It focuses on providing:
+The data here is automatically generated from the [cve-data-enrichment](https://github.com/anchore/cve-data-enrichment) repository using tools from the [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) project. It focuses on providing:
 
 - CPE configurations for vulnerabilities not yet analyzed by NVD
 - Corrections to existing CPE configurations when needed
