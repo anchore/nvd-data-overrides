@@ -10,10 +10,6 @@ The data here is automatically generated from the [cve-data-enrichment](https://
 - Corrections to existing CPE configurations when needed
 - Additional metadata that helps with accurate vulnerability matching
 
-## Using This Data
-
-The data is structured to be compatible with existing tools that use NVD data. Each JSON file follows the NVD schema and can be used to supplement or override official NVD records.
-
 ### Repository Structure
 
 ```
