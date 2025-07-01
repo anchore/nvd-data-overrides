@@ -82,9 +82,30 @@ def generate():
         }
 
         rejection = enriched["additionalMetadata"].get("rejection")
+        ignore = enriched["additionalMetadata"].get("ignore")
 
         if rejection:
             override["_annotation"]["reason"] = "Emptying previously overridden CVE record because the CVE has been rejected."
+        elif ignore:
+            # For now it is necessary to put some sort of CPE config in so that the override will take 
+            # precendence over NVD
+            override["cve"]["configurations"] = [
+                {
+                    "nodes": [
+                        {
+                            "cpeMatch": [
+                                {
+                                    "criteria": "cpe:2.3:a:null:null:*:*:*:*:*:*:*:*",
+                                    "matchCriteriaId": "D946F4FD-8E0C-537B-ACD4-D734367DE712",
+                                    "vulnerable": False,
+                                }
+                            ], 
+                            "negate": False, 
+                            "operator": "OR"
+                        }
+                    ],
+                }
+            ]
         else:
             affected = enriched["adp"]["affected"]
 
