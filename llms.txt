@@ -1,0 +1,23 @@
+# NVD Data Overrides
+
+This repository contains additional vulnerability data to fill gaps in the National Vulnerability Database (NVD). It provides CPE configurations and other vulnerability information not currently available in NVD.
+
+## Repository Structure
+
+- `data/` - JSON files organized by year containing CVE override data
+- `schema/` - JSON schema definition for override data format
+- `scripts/` - Generation and maintenance scripts
+
+## Data Format
+
+Each JSON file contains:
+- CVE ID and metadata
+- CPE match configurations
+- Version ranges for affected software
+- Vulnerability status information
+
+## Purpose
+
+This is a generated data repository that supplements NVD's public vulnerability dataset. It does not provide severity scores (only NVD can provide official NVD CVSS scores) but focuses on missing configuration data.
+
+The tooling and collaboration happens in the [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) repository.
