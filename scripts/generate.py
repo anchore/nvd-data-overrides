@@ -69,20 +69,41 @@ def generate():
         with open(anchore_enriched) as f:
             enriched = json.load(f)
 
-        cve_id = enriched["additionalMetadata"]["cveId"]
+        additional_medatata = enriched["additionalMetadata"]
+        cve_id = additional_medatata["cveId"]
         year = cve_id.split("-")[1]
 
         override = {
             "_annotation": {
-                "cve_id": enriched["additionalMetadata"]["cveId"],
-                "reason": enriched["additionalMetadata"]["reason"],
+                "cve_id": additional_medatata["cveId"],
+                "reason": additional_medatata["reason"],
                 "generated_from": f"https://raw.githubusercontent.com/anchore/cve-data-enrichment/main/data/anchore/{year}/{cve_id}.json",
             },
             "cve": {},
         }
 
-        rejection = enriched["additionalMetadata"].get("rejection")
-        ignore = enriched["additionalMetadata"].get("ignore")
+        description = additional_medatata.get("description")
+        if description:
+            override["_annotation"]["description"] = description
+
+        cna = additional_medatata.get("cna")
+        if cna:
+            override["_annotation"]["cna"] = cna
+
+        references = additional_medatata.get("references")
+        if references:
+            override["_annotation"]["references"] = references
+
+        published = additional_medatata.get("upstream", {}).get("datePublished")
+        if published:
+            override["_annotation"]["published"] = published
+
+        modified = additional_medatata.get("upstream", {}).get("dateUpdated")
+        if modified:
+            override["_annotation"]["modified"] = modified
+
+        rejection = additional_medatata.get("rejection")
+        ignore = additional_medatata.get("ignore")
 
         if rejection:
             override["_annotation"]["reason"] = "Emptying previously overridden CVE record because the CVE has been rejected."
