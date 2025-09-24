@@ -27,6 +27,24 @@
         },
         "generated_from": {
           "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "cna": {
+          "type": "string"
+        },
+        "published": {
+          "type": "string"
+        },
+        "modified": {
+          "type": "string"
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
