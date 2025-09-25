@@ -19,7 +19,7 @@ jobs:
       - name: Configure git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Generate NVD override records
         run: ./scripts/generate.sh
       - name: Verify overrides json schema
