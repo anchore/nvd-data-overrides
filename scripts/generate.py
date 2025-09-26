@@ -155,7 +155,7 @@ def generate():
 
                             less_than = version.get("lessThan")
                             less_than_or_equal = version.get("lessThanOrEqual")
-                            v = version["version"].strip()
+                            v = version["version"].strip().replace("(", "\\(").replace(")", "\\)")
 
                             if not less_than and not less_than_or_equal:
                                 # This is a single affected version so set the version component in the CPE
