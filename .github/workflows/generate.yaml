@@ -10,7 +10,7 @@ jobs:
     name: "Generate NVD overrides from enriched records"
     runs-on: ubuntu-latest
     container:
-      image: python:3-alpine
+      image: python:3.13-alpine
     steps:
       - name: Install OS dependencies
         run: apk add --no-cache bash git
