@@ -1,3 +1,6 @@
+> [!WARNING]  
+> The json data files in this repo are automatically generated every hour off of the data in https://github.com/anchore/cve-data-enrichment.  Do not manually edit data here.
+
 # NVD Data Overrides
 
 This repository is for filling the gap NVD has left in the public vulnerability dataset.
