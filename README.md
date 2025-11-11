@@ -1,5 +1,5 @@
 > [!WARNING]  
-> The json data files in this repo are automatically generated every hour off of the data in https://github.com/anchore/cve-data-enrichment which in turn is generated from https://github.com/anchore/vulnerability-data-spec-files.  Do not manually edit data here.
+> The json data files in this repo are automatically generated every hour off of the data in https://github.com/anchore/cve-data-enrichment which in turn is generated from https://github.com/anchore/vulnerability-data-index-files.  Do not manually edit data here.
 
 # NVD Data Overrides
 
