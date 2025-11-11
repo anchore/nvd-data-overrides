@@ -1,7 +1,13 @@
+name: "Generate NVD Data Overrides"
+
 on: 
   workflow_dispatch:
   schedule:
     - cron: '20 * * * MON-FRI'
+
+concurrency:
+  group: generate
+  cancel-in-progress: true
 
 jobs:
   generate:
