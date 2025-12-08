@@ -62,6 +62,17 @@ class MatchCriteriaIdGenerator:
         return self._nvd_known_id_lookup.get(s, str(uuid.uuid5(namespace, s))).upper()
 
 
+platform_to_cpe_lookup = {
+    "android": "cpe:2.3:o:google:android:-:*:*:*:*:*:*:*",
+    "ios": "cpe:2.3:o:apple:iphone_os:-:*:*:*:*:*:*:*",
+    "macos": "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*",
+    "windows":  "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
+    "linux": "cpe:2.3:o:linux:linux_kernel:-:*:*:*:*:*:*:*",
+    "gentoo": "cpe:2.3:o:gentoo:linux:-:*:*:*:*:*:*:*",
+    "debian": "cpe:2.3:o:debian:debian_linux:-:*:*:*:*:*:*:*",
+}
+
+
 def generate():
     generator = MatchCriteriaIdGenerator()
 
@@ -193,103 +204,31 @@ def generate():
 
                     # Handle creating platform cpe config for specific cases.  This won't handle multi-node configs,
                     # but that isn't necessary for the current dataset and we can always expand it later if needed.
-                    platforms = affected.get("platforms")
-                    match platforms:
-                        case ["Android"]:
-                            configuration["operator"] = "AND"
-                            configuration["nodes"].append(
-                                {
-                                    "cpeMatch": [
-                                        {
-                                            "vulnerable": False,
-                                            "criteria": "cpe:2.3:o:google:android:-:*:*:*:*:*:*:*",
-                                            "matchCriteriaId": "F8B9FEC8-73B6-43B8-B24E-1F7C20D91D26",
-                                        }
-                                    ],
-                                    "negate": False,
-                                    "operator": "OR",
-                                }
-                            )
-                        case ["iOS"]:
-                            configuration["operator"] = "AND"
-                            configuration["nodes"].append(
-                                {
-                                    "cpeMatch": [
-                                        {
-                                            "vulnerable": False,
-                                            "criteria": "cpe:2.3:o:apple:iphone_os:-:*:*:*:*:*:*:*",
-                                            "matchCriteriaId": "B5415705-33E5-46D5-8E4D-9EBADC8C5705",
-                                        }
-                                    ],
-                                    "negate": False,
-                                    "operator": "OR",
-                                }
-                            )
-                        case ["MacOS"]:
-                            configuration["operator"] = "AND"
-                            configuration["nodes"].append(
-                                {
-                                    "cpeMatch": [
-                                        {
-                                            "vulnerable": False,
-                                            "criteria": "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*",
-                                            "matchCriteriaId": "387021A0-AF36-463C-A605-32EA7DAC172E",
-                                        }
-                                    ],
-                                    "negate": False,
-                                    "operator": "OR",
-                                }
-                            )
-                        case ["Windows"]:
-                            configuration["operator"] = "AND"
-                            configuration["nodes"].append(
-                                {
-                                    "cpeMatch": [
-                                        {
-                                            "vulnerable": False,
-                                            "criteria": "cpe:2.3:o:microsoft:windows:-:*:*:*:*:*:*:*",
-                                            "matchCriteriaId": "A2572D17-1DE6-457B-99CC-64AFD54487EA",
-                                        }
-                                    ],
-                                    "negate": False,
-                                    "operator": "OR",
-                                }
-                            )
-                        case ["Gentoo"]:
-                            configuration["operator"] = "AND"
-                            configuration["nodes"].append(
-                                {
-                                    "cpeMatch": [
-                                        {
-                                            "vulnerable": False,
-                                            "criteria": "cpe:2.3:o:gentoo:linux:-:*:*:*:*:*:*:*",
-                                            "matchCriteriaId": "92121D8A-529E-454A-BC8D-B6E0017E615D",
-                                        }
-                                    ],
-                                    "negate": False,
-                                    "operator": "OR",
-                                }
-                            )
-
-                    platform_cpes = affected.get("platformCpes", [])
-                    if platform_cpes:
-                        configuration["operator"] = "AND"
-                        matches = []
-                        for cpe in platform_cpes:
-                            match = {
+                    platforms = affected.get("platforms", [])
+                    if platforms:
+                        platform_matches = []
+                        for platform in platforms:
+                            platform = platform.lower()
+                            platform_cpe = platform_to_cpe_lookup.get(platform)
+                            if not platform_cpe:
+                                continue
+                            
+                            platform_cpe_match_criteria = {
                                 "vulnerable": False,
-                                "criteria": cpe,
+                                "criteria": platform_cpe,
                             }
-                            match["matchCriteriaId"] = generator.generate(cpe_match)
-                            matches.append(match)
-
-                        configuration["nodes"].append(
-                            {
-                                "cpeMatch": matches,
-                                "negate": False,
-                                "operator": "OR",
-                            }
-                        )
+                            platform_cpe_match_criteria["matchCriteriaId"] = generator.generate(platform_cpe_match_criteria)
+                            platform_matches.append(platform_cpe_match_criteria)
+                        
+                        if platform_matches:
+                            configuration["operator"] = "AND"
+                            configuration["nodes"].append(
+                                {
+                                    "cpeMatch": platform_matches,
+                                    "negate": False,
+                                    "operator": "OR",
+                                }
+                            )
 
                     override["cve"]["configurations"].append(configuration)
 
