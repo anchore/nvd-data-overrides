@@ -1,3 +1,6 @@
+> [!WARNING]  
+> The json data files in this repo are automatically generated every hour off of the data in https://github.com/anchore/cve-data-enrichment which in turn is generated from https://github.com/anchore/vulnerability-index-spec-files.  Do not manually edit data here.
+
 # NVD Data Overrides
 
 This repository contains enriched vulnerability data in NVD-compatible format. It provides additional information and corrections that supplement the official National Vulnerability Database (NVD).
@@ -32,6 +35,5 @@ This repository is automatically generated. To contribute:
 
 Direct pull requests to this repository will not be accepted since all data here is generated automatically.
 
-## License
-
-The vulnerability data in this repository is licensed under [CC0](LICENSE) to ensure maximum reusability by the community.
+# License
+The content in this repo is licensed [CC0](https://creativecommons.org/public-domain/cc0/) as noted in the [LICENSE](LICENSE) file
