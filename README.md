@@ -3,11 +3,37 @@
 
 # NVD Data Overrides
 
-This repository is for filling the gap NVD has left in the public vulnerability dataset.
+This repository contains enriched vulnerability data in NVD-compatible format. It provides additional information and corrections that supplement the official National Vulnerability Database (NVD).
 
-This repo is meant to provide additional data that is currently missing from NVD. Please note, this data does not provide severity information. By definition only NVD can supply NVD CVSS scores.
+## About This Repository
 
-The tooling that drives this repo as well as ideas for capturing the vulnerability data in a nicer way is being tracked in a repo called [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools). Please use that repo for filing issues and collaborating. This repo only contains generated data.
+The data here is automatically generated from the [cve-data-enrichment](https://github.com/anchore/cve-data-enrichment) repository using tools from the [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) project. It focuses on providing:
+
+- CPE configurations for vulnerabilities not yet analyzed by NVD
+- Corrections to existing CPE configurations when needed
+- Additional metadata that helps with accurate vulnerability matching
+
+### Repository Structure
+
+```
+data/
+  2024/           # Organized by CVE year
+    CVE-*.json    # One file per CVE
+  2025/
+    CVE-*.json
+```
+
+Each JSON file contains only the additional or corrected data needed to supplement the official NVD record.
+
+## Contributing
+
+This repository is automatically generated. To contribute:
+
+1. Visit the [vulnerability-data-tools](https://github.com/anchore/vulnerability-data-tools) repository
+2. Follow the contribution guidelines there
+3. Submit your changes through that project
+
+Direct pull requests to this repository will not be accepted since all data here is generated automatically.
 
 # License
 The content in this repo is licensed [CC0](https://creativecommons.org/public-domain/cc0/) as noted in the [LICENSE](LICENSE) file
