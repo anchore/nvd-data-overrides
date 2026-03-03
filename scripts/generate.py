@@ -243,7 +243,7 @@ def generate():
                     })
 
                 if refs:
-                    override["cve"]["references"] = refs
+                    override["cve"]["references"] = sorted(refs, key = lambda k: k["url"])
 
         override_path = f"data/{year}"
 
