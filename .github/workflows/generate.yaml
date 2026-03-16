@@ -2,6 +2,8 @@ name: "Generate NVD Data Overrides"
 
 on: 
   workflow_dispatch:
+    branches:
+      - main
   schedule:
     - cron: '20 * * * MON-FRI'
 
@@ -16,7 +18,8 @@ jobs:
     name: "Generate NVD overrides from enriched records"
     runs-on: ubuntu-latest
     container:
-      image: python:3.13-alpine
+      image: python:3.14-alpine
+    if: github.repository == 'anchore/nvd-data-overrides' # only run for main repo
     steps:
       - name: Install OS dependencies
         run: apk add --no-cache bash git
