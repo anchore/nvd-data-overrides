@@ -15,6 +15,8 @@ jobs:
   generate:
     permissions:
       contents: write
+    environment:
+      name: generator
     name: "Generate NVD overrides from enriched records"
     runs-on: ubuntu-latest
     container:
@@ -22,14 +24,15 @@ jobs:
     if: github.repository == 'anchore/nvd-data-overrides' # only run for main repo
     steps:
       - name: Install OS dependencies
-        run: apk add --no-cache bash git
+        run: apk add --no-cache bash git openssh
       - name: Install python dependencies
         run: pip install check-jsonschema cpe
       - name: Configure git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
           persist-credentials: true
       - name: Clean data directory
         run: |
