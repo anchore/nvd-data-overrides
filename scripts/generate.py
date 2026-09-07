@@ -143,6 +143,7 @@ def generate():
 
             if affected:
                 override["cve"]["configurations"] = []
+                encountered_configs = set()
 
                 for affected in affected:
                     cpes = affected.get("cpes")
@@ -230,7 +231,10 @@ def generate():
                                 }
                             )
 
-                    override["cve"]["configurations"].append(configuration)
+                    config_dump = json.dumps(configuration)
+                    if config_dump not in encountered_configs:
+                        override["cve"]["configurations"].append(configuration)
+                        encountered_configs.add(config_dump)
 
             references = enriched["adp"].get("references")
             if references:
