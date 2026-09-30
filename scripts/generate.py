@@ -160,6 +160,10 @@ def generate():
                         node = {"cpeMatch": [], "negate": False, "operator": "OR"}
 
                         for version in versions:
+                            version_type = version.get("versionType")
+                            if version_type in ["date", "git"]:
+                                continue
+
                             cpe_match = {
                                 "criteria": cpe,
                                 "vulnerable": version["status"] == "affected",
@@ -201,7 +205,8 @@ def generate():
                             cpe_match["matchCriteriaId"] = generator.generate(cpe_match)
                             node["cpeMatch"].append(cpe_match)
 
-                        configuration["nodes"].append(node)
+                        if node["cpeMatch"]:
+                            configuration["nodes"].append(node)
 
                     # Handle creating platform cpe config for specific cases.  This won't handle multi-node configs,
                     # but that isn't necessary for the current dataset and we can always expand it later if needed.
