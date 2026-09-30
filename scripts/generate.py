@@ -236,10 +236,11 @@ def generate():
                                 }
                             )
 
-                    config_dump = json.dumps(configuration)
-                    if config_dump not in encountered_configs:
-                        override["cve"]["configurations"].append(configuration)
-                        encountered_configs.add(config_dump)
+                    if len(configuration["nodes"]) > 0:
+                        config_dump = json.dumps(configuration)
+                        if config_dump not in encountered_configs:
+                            override["cve"]["configurations"].append(configuration)
+                            encountered_configs.add(config_dump)
 
             references = enriched["adp"].get("references")
             if references:
@@ -253,6 +254,11 @@ def generate():
 
                 if refs:
                     override["cve"]["references"] = sorted(refs, key = lambda k: k["url"])
+
+            if len(override["cve"]["configurations"]) == 0:
+                del override["cve"]["configurations"]
+                if not references:
+                    continue
 
         override_path = f"data/{year}"
 
